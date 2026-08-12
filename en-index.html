@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Hugo Chambat — Piano, Music, and Contemplation</title>
+<meta name="description" content="Hugo Chambat, pianist and composer: music, philosophy, travel, and teaching — an artistic world to explore.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Mono:wght@400;500&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
@@ -120,7 +121,7 @@
     animation: rise var(--dur) 0.15s ease forwards;
   }
   .hero__title{
-    font-size: clamp(52px, 10vw, 128px); font-style:italic; font-weight:500; line-height:0.98;
+    font-size: clamp(40px, 8vw, 100px); font-style:italic; font-weight:500; line-height:0.98;
     margin:0; letter-spacing:-0.01em; opacity:0; animation: rise var(--dur) 0.35s ease forwards;
   }
   .hero__tagline{
@@ -289,7 +290,7 @@
 </div>
 
 <header class="hero" id="top">
-  <div class="hero__bg" style="background-image:url('assets/hero-bg.jpg');" role="img" aria-label="Contemplative silhouette facing a sunrise over a sea of clouds"></div>
+  <div class="hero__bg" style="background-image:url('assets/hero-lake.jpg'); background-position: center 55%;" role="img" aria-label="Sunlit alpine lake, reeds in the foreground"></div>
   <div class="hero__vignette" aria-hidden="true"></div>
   <div class="hero__content">
     <p class="hero__eyebrow">Piano · Composition · Travel Notebooks</p>
@@ -301,6 +302,7 @@
         <span class="listen-label" id="playLabel">Listen</span>
         <span class="listen-bars" aria-hidden="true"><span></span><span></span><span></span></span>
       </button>
+      <audio id="themeAudio" src="assets/theme-music.m4a" loop preload="none"></audio>
     </div>
   </div>
   <div class="scroll-cue" aria-hidden="true"><span></span>scroll</div>
@@ -323,7 +325,7 @@
       <a href="en-music.html" style="text-decoration:none;color:inherit;display:block;">
       <div class="univers-card__img" style="background-image:url('assets/card-musique.jpg');" role="img" aria-label="Concert with painted canvases displayed on stage"></div>
       <div class="univers-card__body">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.3" stroke-linecap="round"><path d="M3 20 L3 6 M3 6 C7 3 10 9 14 6 C17 4 19 7 21 5 L21 20"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="18" r="2.6"/><circle cx="16.5" cy="16" r="2.6"/><path d="M9.5 18 L9.5 6 L19 4 L19 16"/></svg>
       <h3>Music</h3>
       <p>Composition, piano, jazz, and film scoring — the pursuit of a total art.</p>
       </div>
@@ -343,7 +345,7 @@
       <a href="en-travel.html" style="text-decoration:none;color:inherit;display:block;">
       <div class="univers-card__img" style="background-image:url('assets/card-voyage.jpg');" role="img" aria-label="Aeroplane wing over an alpine lake"></div>
       <div class="univers-card__body">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.3" stroke-linecap="round"><path d="M4 20 L10 6 L14 14 L17 8 L21 20 Z"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 L12 17"/><path d="M12 5 L18 15 L12 15 Z"/><path d="M5 17 L19 17 L16 20.5 L8 20.5 Z"/></svg>
       <h3>Travel</h3>
       <p>Opération Mermoz — notebooks, cultures, and languages from a world travelled at human scale.</p>
       </div>
@@ -411,7 +413,6 @@
   </div>
 </footer>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
 <script>
   const nav = document.getElementById('nav');
   const onScroll = () => {
@@ -472,38 +473,21 @@
   const playBtn = document.getElementById('playBtn');
   const playIcon = document.getElementById('playIcon');
   const playLabel = document.getElementById('playLabel');
-  let synth, isPlaying = false, audioReady = false;
+  const themeAudio = document.getElementById('themeAudio');
+  let isPlaying = false;
 
-  async function initAudio(){
-    if (typeof Tone === 'undefined') return false;
-    try {
-      await Tone.start();
-      synth = new Tone.PolySynth(Tone.Synth, {
-        oscillator: { type: 'sine' },
-        envelope: { attack: 2.2, decay: 1, sustain: 0.55, release: 5 }
-      }).toDestination();
-      synth.volume.value = -20;
-      const chords = [['D4','A4','F#5'], ['C4','G4','E5'], ['A3','E4','C#5'], ['F3','C4','A4']];
-      let i = 0;
-      new Tone.Loop((time) => {
-        synth.triggerAttackRelease(chords[i % chords.length], '2n', time);
-        i++;
-      }, '3n').start(0);
-      Tone.Transport.bpm.value = 32;
-      audioReady = true;
-      return true;
-    } catch (e) { return false; }
-  }
-
-  playBtn.addEventListener('click', async () => {
-    if (!audioReady){
-      const ok = await initAudio();
-      if (!ok){ isPlaying = !isPlaying; renderPlayState(); return; }
+  playBtn.addEventListener('click', () => {
+    if (!isPlaying){
+      themeAudio.play().catch(() => {});
+      isPlaying = true;
+    } else {
+      themeAudio.pause();
+      isPlaying = false;
     }
-    if (!isPlaying){ Tone.Transport.start(); isPlaying = true; }
-    else { Tone.Transport.pause(); isPlaying = false; }
     renderPlayState();
   });
+
+  themeAudio.addEventListener('ended', () => { isPlaying = false; renderPlayState(); });
 
   function renderPlayState(){
     playBtn.classList.toggle('is-playing', isPlaying);
