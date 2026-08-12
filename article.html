@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="pageTitle">Journal — Hugo Chambat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Mono:wght@400;500&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #F6F0E3; --paper-deep: #EEE3CC; --ink: #211E19; --ink-soft: #4C463C;
+    --earth: #6C5842; --earth-deep: #493A29; --forest: #3E4A3B;
+    --line: rgba(33,30,25,0.16); --line-strong: rgba(33,30,25,0.32);
+    --display: 'Cormorant Garamond', serif; --script: 'Caveat', cursive; --mono: 'IBM Plex Mono', monospace;
+  }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:var(--paper); color:var(--ink); font-family:var(--display); font-weight:400; -webkit-font-smoothing:antialiased; }
+  a{ color:inherit; }
+  ::selection{ background:var(--earth); color:var(--paper); }
+  .nav{ position:fixed; top:0; left:0; right:0; z-index:40; display:flex; align-items:center; justify-content:space-between;
+    padding:20px clamp(20px,5vw,64px); font-family:var(--mono); font-size:12px; letter-spacing:0.14em; text-transform:uppercase;
+    background:rgba(246,240,227,0.9); backdrop-filter:blur(10px); box-shadow:0 1px 0 var(--line); }
+  .nav__name{ font-family:var(--display); font-style:italic; font-weight:500; font-size:16px; letter-spacing:0.02em; text-transform:none; text-decoration:none; }
+  .nav__back{ text-decoration:none; opacity:0.75; }
+  .nav__back:hover{ opacity:1; }
+
+  main{ max-width:720px; margin:0 auto; padding:150px 24px 120px; }
+  .article__date{ font-family:var(--mono); font-size:11px; letter-spacing:0.2em; text-transform:uppercase; color:var(--earth-deep); display:block; margin-bottom:18px; text-align:center; }
+  .article__title{ font-size:clamp(34px,6vw,56px); font-style:italic; font-weight:500; text-align:center; margin:0 0 40px; line-height:1.1; }
+  .article__cover{ width:100%; aspect-ratio:16/9; background-size:cover; background-position:center; margin-bottom:40px; filter:sepia(0.15) saturate(0.65) contrast(1.02); }
+  .article__video{ position:relative; width:100%; aspect-ratio:16/9; margin-bottom:40px; background:var(--ink); }
+  .article__video iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; }
+  .article__body{ font-size:19px; line-height:1.8; color:var(--ink); }
+  .article__body p{ margin:0 0 24px; }
+  .article__body img{ width:100%; height:auto; margin:32px 0; filter:sepia(0.1) saturate(0.7) contrast(1.02); }
+  .article__body h2, .article__body h3{ font-style:italic; font-weight:500; margin:40px 0 16px; }
+  .article__body a{ color:var(--earth-deep); text-decoration-thickness:1px; }
+  .article__body blockquote{ border-left:1px solid var(--line-strong); padding-left:24px; margin:32px 0; font-style:italic; color:var(--ink-soft); }
+
+  .back-link{ display:block; text-align:center; margin-top:60px; font-family:var(--mono); font-size:12px; letter-spacing:0.1em; text-transform:uppercase; }
+
+  footer{ background:var(--ink); color:rgba(246,240,227,0.6); text-align:center; padding:30px; font-family:var(--mono); font-size:11px; }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="index.html" class="nav__name">Hugo Chambat</a>
+  <a href="journal.html" class="nav__back">← Journal</a>
+</nav>
+
+<main id="articleContent">
+  <p style="text-align:center; color:var(--ink-soft);">Chargement…</p>
+</main>
+
+<footer>Hugo Chambat — © 2026</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const slug = params.get('slug');
+  const container = document.getElementById('articleContent');
+
+  function formatDate(iso){
+    try {
+      const d = new Date(iso);
+      return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+    } catch(e) { return iso; }
+  }
+
+  function videoEmbedUrl(url){
+    if (!url) return null;
+    const yt = url.match(/(?:youtu\.be\/|youtube\.com\/watch\?v=|youtube\.com\/embed\/)([\w-]+)/);
+    if (yt) return `https://www.youtube.com/embed/${yt[1]}`;
+    const vm = url.match(/vimeo\.com\/(\d+)/);
+    if (vm) return `https://player.vimeo.com/video/${vm[1]}`;
+    return null;
+  }
+
+  if (!slug){
+    container.innerHTML = '<p style="text-align:center;">Article introuvable. <a href="journal.html">Retour au journal</a>.</p>';
+  } else {
+    fetch(`content/articles/${slug}.md`, { cache: 'no-store' })
+      .then(r => { if (!r.ok) throw new Error('not found'); return r.text(); })
+      .then(text => {
+        const m = text.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
+        if (!m){ throw new Error('bad format'); }
+        const front = m[1];
+        const body = m[2];
+        const data = {};
+        front.split('\n').forEach(line => {
+          const idx = line.indexOf(':');
+          if (idx === -1) return;
+          let key = line.slice(0, idx).trim();
+          let val = line.slice(idx + 1).trim();
+          val = val.replace(/^['"]|['"]$/g, '');
+          data[key] = val;
+        });
+
+        document.getElementById('pageTitle').textContent = (data.title || 'Journal') + ' — Hugo Chambat';
+
+        const embed = videoEmbedUrl(data.video_url);
+        container.innerHTML = `
+          <span class="article__date">${formatDate(data.date)}</span>
+          <h1 class="article__title">${data.title || ''}</h1>
+          ${data.cover ? `<div class="article__cover" style="background-image:url('${data.cover}')"></div>` : ''}
+          ${embed ? `<div class="article__video"><iframe src="${embed}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>` : ''}
+          <div class="article__body">${marked.parse(body)}</div>
+          <a class="back-link" href="journal.html">← Retour au journal</a>
+        `;
+      })
+      .catch(() => {
+        container.innerHTML = '<p style="text-align:center;">Article introuvable. <a href="journal.html">Retour au journal</a>.</p>';
+      });
+  }
+</script>
+</body>
+</html>

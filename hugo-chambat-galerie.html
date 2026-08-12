@@ -194,14 +194,35 @@
   }, { threshold: 0.1 });
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
-  const tabs = document.querySelectorAll('.tab-btn');
-  const items = document.querySelectorAll('.g-item');
-  tabs.forEach(tab => tab.addEventListener('click', () => {
-    tabs.forEach(t => t.classList.remove('is-active'));
-    tab.classList.add('is-active');
-    const filter = tab.dataset.filter;
-    items.forEach(it => it.classList.toggle('is-hidden', it.dataset.cat !== filter));
-  }));
+  function setupTabs(){
+    const tabs = document.querySelectorAll('.tab-btn');
+    const items = document.querySelectorAll('.g-item');
+    tabs.forEach(tab => tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('is-active'));
+      tab.classList.add('is-active');
+      const filter = tab.dataset.filter;
+      items.forEach(it => it.classList.toggle('is-hidden', it.dataset.cat !== filter));
+    }));
+  }
+
+  fetch('content/photos-index.json', { cache: 'no-store' })
+    .then(r => r.json())
+    .then(photos => {
+      const grid = document.getElementById('galleryGrid');
+      photos.forEach(p => {
+        if (!p.image) return;
+        const a = document.createElement('a');
+        const cat = p.category === 'nature' ? 'nature' : 'scene';
+        a.className = 'g-item' + (cat === 'nature' ? ' is-hidden' : '');
+        a.dataset.cat = cat;
+        a.href = p.image;
+        a.style.backgroundImage = `url('${p.image}')`;
+        a.setAttribute('aria-label', p.caption || '');
+        grid.prepend(a);
+      });
+    })
+    .catch(() => {})
+    .finally(setupTabs);
 </script>
 </body>
 </html>

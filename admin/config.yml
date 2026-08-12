@@ -1,0 +1,50 @@
+backend:
+  name: github
+  branch: main
+  repo: hugochambat-ctrl/Site-Hugo-Chambat
+  base_url: https://REMPLACER-PAR-VOTRE-PROXY.workers.dev
+  auth_endpoint: auth
+
+media_folder: "assets/journal"
+public_folder: "/assets/journal"
+
+locale: "fr"
+
+collections:
+  - name: "articles"
+    label: "Articles"
+    label_singular: "Article"
+    folder: "content/articles"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    format: "frontmatter"
+    fields:
+      - { label: "Page concernée", name: "page", widget: "select", options: [
+            { label: "Musique", value: "musique" },
+            { label: "Philosophie", value: "philosophie" },
+            { label: "Voyage", value: "voyage" },
+            { label: "Nature", value: "nature" }
+          ] }
+      - { label: "Titre", name: "title", widget: "string" }
+      - { label: "Date", name: "date", widget: "datetime", format: "YYYY-MM-DD" }
+      - { label: "Photo de couverture", name: "cover", widget: "image", required: false }
+      - { label: "Vidéo (lien YouTube ou Vimeo)", name: "video_url", widget: "string", required: false, hint: "Collez simplement le lien de la vidéo, ex. https://youtu.be/xxxx" }
+      - { label: "Résumé court", name: "excerpt", widget: "text", required: false, hint: "Une ou deux phrases, affichées dans la liste" }
+      - { label: "Contenu de l'article", name: "body", widget: "markdown" }
+
+  - name: "photos"
+    label: "Galerie — Photos"
+    label_singular: "Photo"
+    folder: "content/photos"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    format: "frontmatter"
+    fields:
+      - { label: "Catégorie", name: "category", widget: "select", options: [
+            { label: "Sur scène", value: "scene" },
+            { label: "Grand air", value: "nature" }
+          ] }
+      - { label: "Photo", name: "image", widget: "image" }
+      - { label: "Légende", name: "caption", widget: "string", required: false }
+      - { label: "Date", name: "date", widget: "datetime", format: "YYYY-MM-DD" }
+      - { label: "Contenu", name: "body", widget: "markdown", required: false }
