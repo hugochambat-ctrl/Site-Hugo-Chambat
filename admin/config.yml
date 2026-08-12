@@ -2,7 +2,7 @@ backend:
   name: github
   branch: main
   repo: hugochambat-ctrl/Site-Hugo-Chambat
-  base_url: https://REMPLACER-PAR-VOTRE-PROXY.workers.dev
+  base_url: https://decap-proxy.hugochambat.workers.dev
   auth_endpoint: auth
 
 media_folder: "assets/journal"
