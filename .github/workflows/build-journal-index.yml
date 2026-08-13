@@ -1,0 +1,85 @@
+name: Build content indexes
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'content/articles/**'
+      - 'content/photos/**'
+
+permissions:
+  contents: write
+
+jobs:
+  build-index:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Generate indexes
+        run: |
+          pip install pyyaml --quiet
+          python3 - <<'PYEOF'
+          import os, re, json, glob
+          import yaml
+
+          def parse_frontmatter(path):
+              with open(path, encoding="utf-8") as f:
+                  text = f.read()
+              m = re.match(r"^---\n(.*?)\n---\n(.*)$", text, re.DOTALL)
+              if not m:
+                  return None
+              return yaml.safe_load(m.group(1)) or {}
+
+          articles = []
+          for path in sorted(glob.glob("content/articles/*.md")):
+              data = parse_frontmatter(path)
+              if data is None:
+                  continue
+              slug = os.path.splitext(os.path.basename(path))[0]
+              articles.append({
+                  "slug": slug,
+                  "page": str(data.get("page", "") or ""),
+                  "title": str(data.get("title", "") or ""),
+                  "date": str(data.get("date", "") or ""),
+                  "cover": str(data.get("cover", "") or ""),
+                  "video_url": str(data.get("video_url", "") or ""),
+                  "excerpt": str(data.get("excerpt", "") or ""),
+              })
+          articles.sort(key=lambda a: a["date"], reverse=True)
+          os.makedirs("content", exist_ok=True)
+          with open("content/articles-index.json", "w", encoding="utf-8") as f:
+              json.dump(articles, f, ensure_ascii=False, indent=2)
+
+          photos = []
+          for path in sorted(glob.glob("content/photos/*.md")):
+              data = parse_frontmatter(path)
+              if data is None:
+                  continue
+              slug = os.path.splitext(os.path.basename(path))[0]
+              photos.append({
+                  "slug": slug,
+                  "category": str(data.get("category", "") or ""),
+                  "image": str(data.get("image", "") or ""),
+                  "caption": str(data.get("caption", "") or ""),
+                  "date": str(data.get("date", "") or ""),
+              })
+          photos.sort(key=lambda p: p["date"], reverse=True)
+          with open("content/photos-index.json", "w", encoding="utf-8") as f:
+              json.dump(photos, f, ensure_ascii=False, indent=2)
+          PYEOF
+
+      - name: Commit indexes if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add content/articles-index.json content/photos-index.json
+          git diff --staged --quiet || git commit -m "Mise à jour des index de contenu [skip ci]"
+          git push
