@@ -10,6 +10,11 @@ public_folder: "/assets/journal"
 
 locale: "fr"
 
+slug:
+  encoding: "ascii"
+  clean_accents: true
+  sanitize_replacement: "-"
+
 collections:
   - name: "articles"
     label: "Articles"
