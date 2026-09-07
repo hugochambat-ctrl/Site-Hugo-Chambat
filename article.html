@@ -83,18 +83,23 @@
     fetch(`content/articles/${slug}.md`, { cache: 'no-store' })
       .then(r => { if (!r.ok) throw new Error('not found'); return r.text(); })
       .then(text => {
-        const m = text.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
+        const m = text.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
         if (!m){ throw new Error('bad format'); }
         const front = m[1];
         const body = m[2];
         const data = {};
-        front.split('\n').forEach(line => {
-          const idx = line.indexOf(':');
-          if (idx === -1) return;
-          let key = line.slice(0, idx).trim();
-          let val = line.slice(idx + 1).trim();
-          val = val.replace(/^['"]|['"]$/g, '');
-          data[key] = val;
+        let currentKey = null;
+        front.split(/\r?\n/).forEach(line => {
+          const keyMatch = !/^\s/.test(line) && line.match(/^([A-Za-z_][A-Za-z0-9_]*):\s?(.*)$/);
+          if (keyMatch){
+            currentKey = keyMatch[1];
+            data[currentKey] = keyMatch[2];
+          } else if (currentKey){
+            data[currentKey] += ' ' + line.trim();
+          }
+        });
+        Object.keys(data).forEach(k => {
+          data[k] = data[k].trim().replace(/^['"]|['"]$/g, '').trim();
         });
 
         document.getElementById('pageTitle').textContent = (data.title || 'Journal') + ' — Hugo Chambat';
