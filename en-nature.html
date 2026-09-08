@@ -167,8 +167,10 @@
     <div>
       <h2>Stay in touch with what's coming</h2>
       <p>A note about a project, a collaboration, or simply to say hello.</p>
-      <form class="newsletter-form" onsubmit="return false;">
-        <input type="email" placeholder="your-email@mail.com" aria-label="Email address" required>
+      <form class="newsletter-form" action="https://ddb02460.sibforms.com/serve/MUIFAHqt_gLB_Jb949SCuoTsZ7oGOXD_RgzyL5Yj0w2W31Y9B8EoVCWmDVIQv_lyfOwkRvojj5xv8AV4IpCzunMxEkxOoMWt3Itrfl9waI5oHqvbrBRt-I4c3r8zOuOBjFhQmL4iR3xfGbaDt3w_87Z9MHmzJcEq2-40MLlktmjy41Pcxj-I3d8Nzlu2WYzF_rp0hYTBRs5DEvbk5g==" method="POST">
+        <input type="email" name="EMAIL" id="EMAIL" placeholder="your-email@mail.com" aria-label="Email address" required>
+        <input type="text" name="email_address_check" value="" style="display:none !important" tabindex="-1" autocomplete="off">
+        <input type="hidden" name="locale" value="en">
         <button type="submit">Subscribe</button>
       </form>
     </div>
@@ -200,6 +202,24 @@
     entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('is-visible'); });
   }, { threshold: 0.15 });
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  document.querySelectorAll('.newsletter-form').forEach(function(form){
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      var btn = form.querySelector('button[type="submit"]');
+      var originalLabel = btn ? btn.textContent : '';
+      if (btn){ btn.textContent = '...'; btn.disabled = true; }
+      var data = new FormData(form);
+      fetch(form.getAttribute('action'), { method: 'POST', body: data, mode: 'no-cors' })
+        .then(function(){
+          form.innerHTML = '<p style="font-family:var(--mono);font-size:13px;letter-spacing:0.04em;color:inherit;opacity:0.85;margin:0;">Merci, votre inscription est confirmée.</p>';
+        })
+        .catch(function(){
+          if (btn){ btn.textContent = originalLabel; btn.disabled = false; }
+        });
+    });
+  });
+
 </script>
 </body>
 </html>
