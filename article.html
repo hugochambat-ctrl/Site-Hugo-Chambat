@@ -46,7 +46,7 @@
 <body>
 <nav class="nav">
   <a href="index.html" class="nav__name">Hugo Chambat</a>
-  <a href="journal.html" class="nav__back">← Journal</a>
+  <a href="index.html" class="nav__back" onclick="if(document.referrer && document.referrer.indexOf(window.location.host) !== -1){history.back(); return false;}">← Retour</a>
 </nav>
 
 <main id="articleContent">
@@ -78,7 +78,7 @@
   }
 
   if (!slug){
-    container.innerHTML = '<p style="text-align:center;">Article introuvable. <a href="journal.html">Retour au journal</a>.</p>';
+    container.innerHTML = '<p style="text-align:center;">Article introuvable. <a href="index.html">Retour à l\'accueil</a>.</p>';
   } else {
     fetch(`content/articles/${slug}.md`, { cache: 'no-store' })
       .then(r => { if (!r.ok) throw new Error('not found'); return r.text(); })
@@ -111,11 +111,11 @@
           ${data.cover ? `<div class="article__cover" style="background-image:url('${data.cover}')"></div>` : ''}
           ${embed ? `<div class="article__video"><iframe src="${embed}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>` : ''}
           <div class="article__body">${marked.parse(body)}</div>
-          <a class="back-link" href="journal.html">← Retour au journal</a>
+          <a class="back-link" href="index.html" onclick="if(document.referrer && document.referrer.indexOf(window.location.host) !== -1){history.back(); return false;}">← Retour</a>
         `;
       })
       .catch(() => {
-        container.innerHTML = '<p style="text-align:center;">Article introuvable. <a href="journal.html">Retour au journal</a>.</p>';
+        container.innerHTML = '<p style="text-align:center;">Article introuvable. <a href="index.html">Retour à l\'accueil</a>.</p>';
       });
   }
 </script>
