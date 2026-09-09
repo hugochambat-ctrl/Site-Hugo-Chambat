@@ -234,7 +234,7 @@
   fetch('content/articles-index.json', { cache: 'no-store' })
     .then(r => r.json())
     .then(articles => {
-      const filtered = articles.filter(a => a.page === 'nature');
+      const filtered = articles.filter(a => a.page === 'nature' && (a.lang || 'fr') === 'fr');
       const wrap = document.getElementById('recentArticles');
       if (!wrap) return;
       if (!filtered.length){ wrap.closest('section').style.display = 'none'; return; }

@@ -30,6 +30,10 @@ collections:
             { label: "Voyage", value: "voyage" },
             { label: "Nature", value: "nature" }
           ] }
+      - { label: "Langue", name: "lang", widget: "select", options: [
+            { label: "Français", value: "fr" },
+            { label: "English", value: "en" }
+          ], default: "fr" }
       - { label: "Titre", name: "title", widget: "string" }
       - { label: "Date", name: "date", widget: "datetime", format: "YYYY-MM-DD" }
       - { label: "Photo de couverture", name: "cover", widget: "image", required: false }
