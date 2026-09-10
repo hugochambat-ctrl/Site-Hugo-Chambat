@@ -1,7 +1,18 @@
 [
   {
+    "slug": "2026-09-09-responsibility-1",
+    "page": "philosophie",
+    "lang": "en",
+    "title": "Responsibility",
+    "date": "2026-09-10",
+    "cover": "/assets/journal/460a2a64-8fc7-4ff2-b8d2-6771ed0db877.jpg",
+    "video_url": "",
+    "excerpt": "How can we act rightly when we no longer truly believe in Good and Evil?\nAfter searching for answers in morality, in relations of power, and then in an almost unconditional form of kindness, one idea gradually imposed itself on me: responsibility.\nNot being responsible for everything that happens, but for what we choose to understand, for our intentions, for the consequences we can anticipate, and for the unnecessary suffering we can prevent.\nAn attempt to build a morality without dogma, somewhere between our powerlessness and our capacity to act."
+  },
+  {
     "slug": "2026-09-09-responsibility",
     "page": "philosophie",
+    "lang": "en",
     "title": "Responsibility",
     "date": "2026-09-10",
     "cover": "/assets/journal/460a2a64-8fc7-4ff2-b8d2-6771ed0db877.jpg",
@@ -11,6 +22,7 @@
   {
     "slug": "2026-09-06-la-responsabilite",
     "page": "philosophie",
+    "lang": "fr",
     "title": "La responsabilité",
     "date": "2026-09-07",
     "cover": "/assets/journal/460a2a64-8fc7-4ff2-b8d2-6771ed0db877.jpg",
@@ -20,6 +32,7 @@
   {
     "slug": "2026-08-12-bienvenue",
     "page": "musique",
+    "lang": "fr",
     "title": "Bienvenue",
     "date": "2026-08-12",
     "cover": "",
