@@ -47,6 +47,7 @@ jobs:
               articles.append({
                   "slug": slug,
                   "page": str(data.get("page", "") or ""),
+                  "lang": str(data.get("lang", "") or "fr"),
                   "title": str(data.get("title", "") or ""),
                   "date": str(data.get("date", "") or ""),
                   "cover": str(data.get("cover", "") or ""),
