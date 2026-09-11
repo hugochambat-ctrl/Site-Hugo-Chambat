@@ -104,6 +104,12 @@
 
   .recent-articles{ max-width:1080px; margin:0 auto; }
   .recent-articles a.theme-row{ text-decoration:none; color:inherit; }
+  .sub-articles{ margin-top:26px; display:flex; flex-direction:column; gap:10px; }
+  .sub-articles:empty{ display:none; }
+  .sub-article{ display:flex; justify-content:space-between; align-items:baseline; gap:16px; text-decoration:none; color:inherit; padding-top:10px; border-top:1px solid var(--line); }
+  .sub-article:hover{ color:var(--earth-deep); }
+  .sub-article__title{ font-style:italic; font-size:15px; }
+  .sub-article__date{ font-family:var(--mono); font-size:10.5px; letter-spacing:0.04em; color:var(--ink-soft); white-space:nowrap; }
   :focus-visible{ outline:2px solid var(--earth); outline-offset:3px; }
 </style>
 </head>
@@ -134,15 +140,16 @@
   <div class="page-hero__content">
     <p class="page-hero__eyebrow">Piano · Jazz · Impressionism · Film Scoring</p>
     <h1 class="page-hero__title">Music</h1>
-    <p class="page-hero__tagline">Looking, in every note, for a door to somewhere else.</p>
+    <p class="page-hero__tagline">The right note, at the right moment.</p>
   </div>
 </header>
 
 <section class="intro reveal">
   <span class="section-label">One quest, several languages</span>
-  <p>The piano was my first language. Jazz taught me to <em>listen</em>, impressionist music to
-  <em>suggest</em>, film scoring to <em>tell a story</em>. These are not separate styles: they are
-  facets of the same pursuit — an art that refuses to settle for a single medium.</p>
+  <p>Music, and the piano especially, have been my gateway into the world of art and toward beauty. Jazz
+  gave me freedom, impressionism gave me poetry, and film music taught me to tell stories and underline the
+  images that carry us away.</p>
+  <p>Different facets, different influences… So what? There is no style — there is only good music!</p>
 </section>
 
 <section>
@@ -164,36 +171,50 @@
     <div class="theme-row__img" style="background-image:url('assets/musique-concert-2.jpg');" role="img" aria-label="Piano lit by warm stage light"></div>
     <div>
       <p class="theme-row__label">01 · Jazz</p>
-      <h3>Listening, above all</h3>
-      <p>Jazz taught me to compose with the moment — to leave room for the unplanned. In a trio or a small
-      group, improvisation becomes a silent conversation between musicians.</p>
+      <h3>A language and a culture of freedom</h3>
+      <p>For me, jazz was first a school for understanding harmony and improvisation. I didn't even
+      particularly enjoy listening to it, in fact — I found it too intense, too dissonant, almost chaotic!</p>
+      <p>But little by little, this school opened onto something far greater than a way of playing: a
+      language, a culture, a certain approach to music, to sharing, and to the present moment. And above all,
+      a freedom I have yet to find anywhere else — except, perhaps, in travel…</p>
+      <div class="sub-articles" id="articles-jazz"></div>
     </div>
   </div>
   <div class="theme-row reverse reveal">
     <div class="theme-row__img" style="background-image:url('assets/musique-orchestre.jpg');" role="img" aria-label="Concert with piano and orchestral ensemble"></div>
     <div>
       <p class="theme-row__label">02 · Impressionist Music</p>
-      <h3>Suggesting rather than describing</h3>
-      <p>Ravel and the impressionists showed me that a single harmonic colour can say more than a melody.
-      A way of painting with sound, in touches, in shades, in silences.</p>
+      <h3>If Verlaine had been a musician</h3>
+      <p>Impressionism is, to me, a form of poetry. It's a music that asks you to take the time to tame
+      colours rarely found elsewhere.</p>
+      <p>And yet these colours can touch and describe, with great precision, feelings and sensations that
+      words alone would often struggle to explain…</p>
+      <div class="sub-articles" id="articles-impressionniste"></div>
     </div>
   </div>
   <div class="theme-row reveal">
     <div class="theme-row__img" style="background-image:url('assets/musique-ensemble.jpg');" role="img" aria-label="Chamber music ensemble on stage"></div>
     <div>
       <p class="theme-row__label">03 · Film Scoring</p>
-      <h3>Telling a story without words</h3>
-      <p>Writing for the screen calls for a different kind of listening: the rhythm of a story, the silence
-      before a gesture. A discipline I explore with the same curiosity as live performance.</p>
+      <h3>A music that underlines and serves</h3>
+      <p>In film music, I found a freer way of composing. There is no fixed form or framework — the music
+      depends, above all, on what you're trying to tell and to convey.</p>
+      <p>I also love the humility of this kind of music: it isn't necessarily there to draw attention to
+      itself, but to serve the image, accompany it, and sometimes elevate it.</p>
+      <div class="sub-articles" id="articles-film"></div>
     </div>
   </div>
   <div class="theme-row reverse reveal">
     <div class="theme-row__img" style="background-image:url('assets/card-musique.jpg');" role="img" aria-label="Concert with painted canvases displayed on stage alongside the piano"></div>
     <div>
       <p class="theme-row__label">04 · Total Art</p>
-      <h3>When music meets the other arts</h3>
-      <p>Live painting, spoken words, light designed like a score: the stage becomes a place where several
-      languages answer one another, for an experience that goes beyond a simple concert.</p>
+      <h3>The great door to beauty</h3>
+      <p>Total art is probably what my work, and my way of living, ultimately reach toward. I don't see it
+      as a mere crossing of disciplines, but as a blend of philosophy, personal experience, and different
+      artistic mediums.</p>
+      <p>Music, film, theatre, writing, image… are all different ways of conveying the same thing. In short,
+      total art is, to me, a way of sharing everything I am made of.</p>
+      <div class="sub-articles" id="articles-art-total"></div>
     </div>
   </div>
 </section>
@@ -263,20 +284,41 @@
   fetch('content/articles-index.json', { cache: 'no-store' })
     .then(r => r.json())
     .then(articles => {
-      const filtered = articles.filter(a => a.page === 'musique' && a.lang === 'en');
-      const wrap = document.getElementById('recentArticles');
-      if (!wrap) return;
-      if (!filtered.length){ wrap.closest('section').style.display = 'none'; return; }
-      wrap.innerHTML = filtered.map(a => `
-        <a class="theme-row" href="en-article.html?slug=${encodeURIComponent(a.slug)}">
-          <div class="theme-row__img" style="${a.cover ? `background-image:url('${a.cover}')` : ''}"></div>
-          <div>
-            <p class="theme-row__label">JOURNAL · ${new Date(a.date).toLocaleDateString('en-US', {day:'numeric',month:'long',year:'numeric'})}</p>
-            <h3>${a.title}</h3>
-            <p>${a.excerpt || ''}</p>
-          </div>
-        </a>
-      `).join('');
+      const musique = articles.filter(a => a.page === 'musique' && a.lang === 'en');
+
+      function fmt(a){
+        return new Date(a.date).toLocaleDateString('en-US', {day:'numeric',month:'long',year:'numeric'});
+      }
+
+      ['jazz','impressionniste','film','art-total'].forEach(cat => {
+        const wrap = document.getElementById('articles-' + cat);
+        if (!wrap) return;
+        const items = musique.filter(a => a.music_category === cat);
+        wrap.innerHTML = items.map(a => `
+          <a class="sub-article" href="en-article.html?slug=${encodeURIComponent(a.slug)}">
+            <span class="sub-article__title">${a.title}</span>
+            <span class="sub-article__date">${fmt(a)}</span>
+          </a>
+        `).join('');
+      });
+
+      const uncategorized = musique.filter(a => !a.music_category);
+      const fallbackWrap = document.getElementById('recentArticles');
+      if (fallbackWrap){
+        if (!uncategorized.length){ fallbackWrap.closest('section').style.display = 'none'; }
+        else {
+          fallbackWrap.innerHTML = uncategorized.map(a => `
+            <a class="theme-row" href="en-article.html?slug=${encodeURIComponent(a.slug)}">
+              <div class="theme-row__img" style="${a.cover ? `background-image:url('${a.cover}')` : ''}"></div>
+              <div>
+                <p class="theme-row__label">JOURNAL · ${fmt(a)}</p>
+                <h3>${a.title}</h3>
+                <p>${a.excerpt || ''}</p>
+              </div>
+            </a>
+          `).join('');
+        }
+      }
     })
     .catch(() => {});
 

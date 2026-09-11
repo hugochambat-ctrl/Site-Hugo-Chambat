@@ -104,6 +104,12 @@
 
   .recent-articles{ max-width:1080px; margin:0 auto; }
   .recent-articles a.theme-row{ text-decoration:none; color:inherit; }
+  .sub-articles{ margin-top:26px; display:flex; flex-direction:column; gap:10px; }
+  .sub-articles:empty{ display:none; }
+  .sub-article{ display:flex; justify-content:space-between; align-items:baseline; gap:16px; text-decoration:none; color:inherit; padding-top:10px; border-top:1px solid var(--line); }
+  .sub-article:hover{ color:var(--earth-deep); }
+  .sub-article__title{ font-style:italic; font-size:15px; }
+  .sub-article__date{ font-family:var(--mono); font-size:10.5px; letter-spacing:0.04em; color:var(--ink-soft); white-space:nowrap; }
   :focus-visible{ outline:2px solid var(--earth); outline-offset:3px; }
 </style>
 </head>
@@ -173,6 +179,7 @@
       <p>Mais peu à peu, cette école s'est ouverte sur bien plus qu'une manière de jouer : un langage, une
       culture, une certaine approche de la musique, du partage et du moment présent. Et surtout, une liberté
       que je n'ai encore trouvée nulle part ailleurs si ce n'est dans le voyage…</p>
+      <div class="sub-articles" id="articles-jazz"></div>
     </div>
   </div>
   <div class="theme-row reverse reveal">
@@ -184,6 +191,7 @@
       d'apprivoiser des couleurs que l'on rencontre peu ailleurs.</p>
       <p>Ces couleurs permettent pourtant de toucher et de décrire avec une grande précision des sentiments et
       des sensations qu'on aurait parfois bien du mal à expliquer avec des mots…</p>
+      <div class="sub-articles" id="articles-impressionniste"></div>
     </div>
   </div>
   <div class="theme-row reveal">
@@ -196,6 +204,7 @@
       transmettre.</p>
       <p>J'aime aussi l'humilité de cette musique : elle n'est pas forcément là pour attirer l'attention sur
       elle-même, mais pour servir l'image, l'accompagner et, parfois, la sublimer.</p>
+      <div class="sub-articles" id="articles-film"></div>
     </div>
   </div>
   <div class="theme-row reverse reveal">
@@ -208,6 +217,7 @@
       personnelles et différents médiums artistiques.</p>
       <p>Musique, cinéma, théâtre, texte, image… sont autant de moyens différents pour transmettre une même
       chose. En somme, l'art total est pour moi une manière de partager tout ce qui me compose.</p>
+      <div class="sub-articles" id="articles-art-total"></div>
     </div>
   </div>
 </section>
@@ -295,20 +305,43 @@
   fetch('content/articles-index.json', { cache: 'no-store' })
     .then(r => r.json())
     .then(articles => {
-      const filtered = articles.filter(a => a.page === 'musique' && (a.lang || 'fr') === 'fr');
-      const wrap = document.getElementById('recentArticles');
-      if (!wrap) return;
-      if (!filtered.length){ wrap.closest('section').style.display = 'none'; return; }
-      wrap.innerHTML = filtered.map(a => `
-        <a class="theme-row" href="article.html?slug=${encodeURIComponent(a.slug)}">
-          <div class="theme-row__img" style="${a.cover ? `background-image:url('${a.cover}')` : ''}"></div>
-          <div>
-            <p class="theme-row__label">JOURNAL · ${new Date(a.date).toLocaleDateString('fr-FR', {day:'numeric',month:'long',year:'numeric'})}</p>
-            <h3>${a.title}</h3>
-            <p>${a.excerpt || ''}</p>
-          </div>
-        </a>
-      `).join('');
+      const musique = articles.filter(a => a.page === 'musique' && (a.lang || 'fr') === 'fr');
+
+      function fmt(a){
+        return new Date(a.date).toLocaleDateString('fr-FR', {day:'numeric',month:'long',year:'numeric'});
+      }
+
+      // Distribute into the four sub-sections
+      ['jazz','impressionniste','film','art-total'].forEach(cat => {
+        const wrap = document.getElementById('articles-' + cat);
+        if (!wrap) return;
+        const items = musique.filter(a => a.music_category === cat);
+        wrap.innerHTML = items.map(a => `
+          <a class="sub-article" href="article.html?slug=${encodeURIComponent(a.slug)}">
+            <span class="sub-article__title">${a.title}</span>
+            <span class="sub-article__date">${fmt(a)}</span>
+          </a>
+        `).join('');
+      });
+
+      // Fallback: articles without a chosen sub-part still show up here
+      const uncategorized = musique.filter(a => !a.music_category);
+      const fallbackWrap = document.getElementById('recentArticles');
+      if (fallbackWrap){
+        if (!uncategorized.length){ fallbackWrap.closest('section').style.display = 'none'; }
+        else {
+          fallbackWrap.innerHTML = uncategorized.map(a => `
+            <a class="theme-row" href="article.html?slug=${encodeURIComponent(a.slug)}">
+              <div class="theme-row__img" style="${a.cover ? `background-image:url('${a.cover}')` : ''}"></div>
+              <div>
+                <p class="theme-row__label">JOURNAL · ${fmt(a)}</p>
+                <h3>${a.title}</h3>
+                <p>${a.excerpt || ''}</p>
+              </div>
+            </a>
+          `).join('');
+        }
+      }
     })
     .catch(() => {});
 </script>
