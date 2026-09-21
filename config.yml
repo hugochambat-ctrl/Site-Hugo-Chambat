@@ -28,6 +28,7 @@ collections:
             { label: "Musique", value: "musique" },
             { label: "Philosophie", value: "philosophie" },
             { label: "Voyage", value: "voyage" },
+            { label: "Transmission", value: "transmission" },
             { label: "Nature", value: "nature" }
           ] }
       - { label: "Partie de la page Musique (si applicable)", name: "music_category", widget: "select", required: false, default: "", hint: "Uniquement si la page concernée est Musique — laissez vide sinon.", options: [
@@ -36,6 +37,12 @@ collections:
             { label: "Musique impressionniste", value: "impressionniste" },
             { label: "Musique de film", value: "film" },
             { label: "Art total", value: "art-total" }
+          ] }
+      - { label: "Partie de la page Transmission (si applicable)", name: "transmission_category", widget: "select", required: false, default: "", hint: "Uniquement si la page concernée est Transmission — laissez vide sinon.", options: [
+            { label: "— Aucune —", value: "" },
+            { label: "Le geste artisanal", value: "artisanat" },
+            { label: "Conférences & interventions", value: "conferences" },
+            { label: "Pédagogie", value: "pedagogie" }
           ] }
       - { label: "Langue", name: "lang", widget: "select", options: [
             { label: "Français", value: "fr" },
