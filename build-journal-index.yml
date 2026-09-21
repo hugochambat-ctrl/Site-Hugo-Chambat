@@ -50,6 +50,7 @@ jobs:
                   "lang": str(data.get("lang", "") or "fr"),
                   "music_category": str(data.get("music_category", "") or ""),
                   "transmission_category": str(data.get("transmission_category", "") or ""),
+                  "related_articles": data.get("related_articles") or [],
                   "title": str(data.get("title", "") or ""),
                   "date": str(data.get("date", "") or ""),
                   "cover": str(data.get("cover", "") or ""),

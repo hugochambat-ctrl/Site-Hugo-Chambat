@@ -83,8 +83,26 @@
   .footer-bottom{ max-width:1100px; margin:70px auto 0; padding-top:26px; border-top:1px solid rgba(246,240,227,0.18); display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px; font-family:var(--mono); font-size:11px; color:rgba(246,240,227,0.55); }
   .recent-articles{ max-width:1080px; margin:0 auto; }
   .recent-articles a.theme-row{ text-decoration:none; color:inherit; }
+  .mindmap{
+    position:relative; max-width:1100px; height:min(70vh, 640px); margin:0 auto;
+    border:1px solid var(--line); background:
+      radial-gradient(circle at 1px 1px, var(--line) 1px, transparent 0) 0 0/24px 24px, var(--paper);
+    overflow:hidden; cursor:grab; touch-action:none;
+  }
+  .mindmap:active{ cursor:grabbing; }
+  .mindmap svg{ width:100%; height:100%; display:block; }
+  .mindmap-empty{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    font-family:var(--script); font-size:22px; color:var(--earth-deep); text-align:center; padding:0 30px; }
+  .mm-link{ stroke:var(--line-strong); stroke-width:1; fill:none; }
+  .mm-node{ cursor:pointer; }
+  .mm-node rect{ fill:var(--paper); stroke:var(--earth-deep); stroke-width:1; transition:fill 0.3s ease, stroke-width 0.3s ease; }
+  .mm-node:hover rect{ fill:var(--paper-deep); stroke-width:1.6; }
+  .mm-node text{ font-family:var(--display); font-style:italic; font-size:13px; fill:var(--ink); pointer-events:none; }
+  .mindmap-hint{ text-align:center; font-family:var(--mono); font-size:10.5px; letter-spacing:0.08em;
+    color:var(--ink-soft); margin-top:14px; text-transform:uppercase; }
   :focus-visible{ outline:2px solid var(--earth); outline-offset:3px; }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 </head>
 <body>
 <div class="grain" aria-hidden="true">
@@ -126,10 +144,13 @@
 </section>
 <section id="articles">
   <div class="gallery-head reveal">
-    <h2>Derniers articles</h2>
-    <p>Notes et réflexions publiées au fil du temps.</p>
+    <h2>Une pensée, ses ramifications</h2>
+    <p>Chaque case est un article. Chaque trait, un lien entre deux idées. Déplacez la vue, zoomez,
+    cliquez sur une case pour lire.</p>
   </div>
-  <div class="recent-articles reveal" id="recentArticles"></div>
+  <div id="mindmap" class="mindmap reveal"><p class="mindmap-empty">Les premiers articles arrivent bientôt…</p></div>
+  <p class="mindmap-hint">glisser pour déplacer · molette pour zoomer · clic pour lire</p>
+</section>
 </section>
 
 <footer id="contact">
@@ -172,6 +193,76 @@
     entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('is-visible'); });
   }, { threshold: 0.15 });
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  fetch('content/articles-index.json', { cache: 'no-store' })
+    .then(r => r.json())
+    .then(articles => {
+      const phi = articles.filter(a => a.page === 'philosophie' && (a.lang || 'fr') === 'fr');
+      const container = document.getElementById('mindmap');
+      if (!phi.length) return; // keep the "coming soon" placeholder
+
+      const slugs = new Set(phi.map(a => a.slug));
+      const nodes = phi.map(a => ({ id: a.slug, title: a.title || 'Sans titre' }));
+      const links = [];
+      phi.forEach(a => {
+        (a.related_articles || []).forEach(rel => {
+          if (rel !== a.slug && slugs.has(rel)) links.push({ source: a.slug, target: rel });
+        });
+      });
+      // de-duplicate (a<->b listed from both sides)
+      const seen = new Set();
+      const dedupLinks = links.filter(l => {
+        const key = [l.source, l.target].sort().join('|');
+        if (seen.has(key)) return false;
+        seen.add(key); return true;
+      });
+
+      container.innerHTML = '';
+      const width = container.clientWidth, height = container.clientHeight;
+      const svg = d3.select(container).append('svg')
+        .attr('viewBox', [0, 0, width, height]);
+      const zoomLayer = svg.append('g');
+      svg.call(d3.zoom().scaleExtent([0.4, 2.5]).on('zoom', (event) => {
+        zoomLayer.attr('transform', event.transform);
+      }));
+
+      const linkSel = zoomLayer.append('g').selectAll('line')
+        .data(dedupLinks).join('line').attr('class', 'mm-link');
+
+      const nodeSel = zoomLayer.append('g').selectAll('g')
+        .data(nodes).join('g').attr('class', 'mm-node')
+        .on('click', (event, d) => { window.location.href = 'article.html?slug=' + encodeURIComponent(d.id); });
+
+      nodeSel.append('rect')
+        .attr('rx', 3)
+        .attr('width', d => Math.max(90, d.title.length * 7 + 24))
+        .attr('height', 40)
+        .attr('x', d => -Math.max(90, d.title.length * 7 + 24) / 2)
+        .attr('y', -20);
+
+      nodeSel.append('text')
+        .attr('text-anchor', 'middle')
+        .attr('dy', '0.32em')
+        .text(d => d.title);
+
+      nodeSel.call(d3.drag()
+        .on('start', (event, d) => { if (!event.active) sim.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; })
+        .on('drag', (event, d) => { d.fx = event.x; d.fy = event.y; })
+        .on('end', (event, d) => { if (!event.active) sim.alphaTarget(0); d.fx = null; d.fy = null; }));
+
+      const sim = d3.forceSimulation(nodes)
+        .force('link', d3.forceLink(dedupLinks).id(d => d.id).distance(150).strength(0.5))
+        .force('charge', d3.forceManyBody().strength(-260))
+        .force('center', d3.forceCenter(width / 2, height / 2))
+        .force('collide', d3.forceCollide(70))
+        .on('tick', () => {
+          linkSel
+            .attr('x1', d => d.source.x).attr('y1', d => d.source.y)
+            .attr('x2', d => d.target.x).attr('y2', d => d.target.y);
+          nodeSel.attr('transform', d => `translate(${d.x},${d.y})`);
+        });
+    })
+    .catch(() => {});
 
   document.querySelectorAll('.newsletter-form').forEach(function(form){
     form.addEventListener('submit', function(e){
