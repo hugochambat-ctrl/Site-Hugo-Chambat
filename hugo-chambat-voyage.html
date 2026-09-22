@@ -99,7 +99,8 @@
   .recent-articles a.theme-row{ text-decoration:none; color:inherit; }
   .route-map{ max-width:1000px; margin:0 auto; border:1px solid var(--line); background:var(--paper-deep); }
   .route-map svg{ width:100%; height:auto; display:block; }
-  .graticule line{ stroke:var(--line); stroke-width:1; }
+  .land path{ fill:var(--paper); stroke:var(--earth); stroke-width:0.6; opacity:0.9; }
+  .graticule path{ stroke:var(--line); stroke-width:1; fill:none; }
   .route-line{ fill:none; stroke:var(--earth); stroke-width:1.3; stroke-dasharray:2 6; stroke-linecap:round; opacity:0.85; }
   .route-point circle{ fill:var(--paper); stroke:var(--earth-deep); stroke-width:1.3; }
   .route-point text{ font-family:var(--mono); font-size:11px; text-anchor:middle; dominant-baseline:central; fill:var(--ink); }
@@ -116,6 +117,8 @@
   .dream-list li{ break-inside:avoid; padding:10px 0; border-top:1px solid var(--line); font-size:15px; line-height:1.5; }
   :focus-visible{ outline:2px solid var(--earth); outline-offset:3px; }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
 </head>
 <body>
 
@@ -165,36 +168,11 @@
     en voilier depuis la Bretagne.</p>
   </div>
   <div class="route-map reveal">
-    <svg viewBox="0 0 1000 460" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Carte stylisée du tracé du voyage, de la Bretagne au retour aux États-Unis en passant par les Amériques, le Pacifique et l'Asie">
-      <g class="graticule">
-        <line x1="0" y1="115" x2="1000" y2="115"/>
-        <line x1="0" y1="230" x2="1000" y2="230"/>
-        <line x1="0" y1="345" x2="1000" y2="345"/>
-        <line x1="166.7" y1="0" x2="166.7" y2="460"/>
-        <line x1="333.3" y1="0" x2="333.3" y2="460"/>
-        <line x1="500" y1="0" x2="500" y2="460"/>
-        <line x1="666.7" y1="0" x2="666.7" y2="460"/>
-        <line x1="833.3" y1="0" x2="833.3" y2="460"/>
-      </g>
-      <polyline class="route-line" points="990.6,53.7 957.2,127.8 830.6,178.7 756.9,157.6 748.0,178.9 787.4,220.8 801.4,295.6 803.7,359.9 797.2,426.1 468.5,403.6 320.0,266.4 331.7,191.5 279.2,181.9 306.9,124.0 376.7,104.8 385.4,100.4 795.6,62.2 802.6,74.1 794.4,80.3 791.2,83.1"/>
-      <g class="route-points" font-family="var(--mono)">
-        <g class="route-point"><circle cx="990.6" cy="53.7" r="9"/><text x="990.6" y="53.7">1</text></g>
-        <g class="route-point"><circle cx="957.2" cy="127.8" r="9"/><text x="957.2" y="127.8">2</text></g>
-        <g class="route-point"><circle cx="830.6" cy="178.7" r="9"/><text x="830.6" y="178.7">3</text></g>
-        <g class="route-point"><circle cx="756.9" cy="157.6" r="9"/><text x="756.9" y="157.6">4</text></g>
-        <g class="route-point"><circle cx="748.0" cy="178.9" r="9"/><text x="748.0" y="178.9">5</text></g>
-        <g class="route-point"><circle cx="787.4" cy="220.8" r="9"/><text x="787.4" y="220.8">6</text></g>
-        <g class="route-point"><circle cx="801.4" cy="295.6" r="9"/><text x="801.4" y="295.6">7</text></g>
-        <g class="route-point"><circle cx="803.7" cy="359.9" r="9"/><text x="803.7" y="359.9">8</text></g>
-        <g class="route-point"><circle cx="797.2" cy="426.1" r="9"/><text x="797.2" y="426.1">9</text></g>
-        <g class="route-point"><circle cx="468.5" cy="403.6" r="10"/><text x="468.5" y="403.6">10</text></g>
-        <g class="route-point"><circle cx="320.0" cy="266.4" r="10"/><text x="320.0" y="266.4">11</text></g>
-        <g class="route-point"><circle cx="331.7" cy="191.5" r="10"/><text x="331.7" y="191.5">12</text></g>
-        <g class="route-point"><circle cx="279.2" cy="181.9" r="10"/><text x="279.2" y="181.9">13</text></g>
-        <g class="route-point"><circle cx="306.9" cy="124.0" r="10"/><text x="306.9" y="124.0">14</text></g>
-        <g class="route-point route-point--wide"><circle cx="381" cy="102.6" r="13"/><text x="381" y="102.6">15–16</text></g>
-        <g class="route-point route-point--wide"><circle cx="795.9" cy="74.9" r="13"/><text x="795.9" y="74.9">17–20</text></g>
-      </g>
+    <svg id="routeSvg" viewBox="0 0 1000 417" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Carte du monde avec le tracé du voyage, de la Bretagne au retour aux États-Unis en passant par les Amériques, le Pacifique et l'Asie">
+      <g id="graticuleLayer" class="graticule"></g>
+      <g id="landLayer" class="land"></g>
+      <polyline id="routeLine" class="route-line" points=""></polyline>
+      <g id="routePoints" class="route-points" font-family="var(--mono)"></g>
     </svg>
   </div>
   <ol class="route-legend reveal">
@@ -307,6 +285,88 @@
     entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('is-visible'); });
   }, { threshold: 0.15 });
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // World map: a true D3 equirectangular projection, rotated so its
+  // antimeridian cut falls in the empty Pacific — this lets D3 clip
+  // landmasses properly instead of stretching them across the seam.
+  (function(){
+    if (typeof d3 === 'undefined' || typeof topojson === 'undefined') return;
+    var W = 1000, H = 417, MINLAT = -60, MAXLAT = 90, CENTER_LON = 20;
+
+    var scale = W / (2 * Math.PI);
+    var projection = d3.geoEquirectangular().rotate([-CENTER_LON, 0]).scale(scale).translate([0, 0]);
+    var ref = projection([CENTER_LON, (MINLAT + MAXLAT) / 2]);
+    projection.translate([W / 2 - ref[0], H / 2 - ref[1]]);
+    var pathGen = d3.geoPath(projection);
+
+    var stops = [
+      [1,  "Lorient",           -3.37,  47.75],
+      [2,  "Las Palmas",       -15.40,  28.10],
+      [3,  "Martinique",       -61.00,  14.60],
+      [4,  "Tulum",            -87.50,  20.20],
+      [5,  "Antigua",          -90.73,  14.56],
+      [6,  "Cali",             -76.53,   3.45],
+      [7,  "Arequipa",         -71.50, -16.40],
+      [8,  "Santiago",         -70.67, -33.45],
+      [9,  "Torres del Paine", -73.00, -51.00],
+      [10, "Queenstown",       168.66, -45.03],
+      [11, "Bali",             115.20,  -8.65],
+      [12, "El Nido",          119.40,  11.20],
+      [13, "Bangkok",          100.50,  13.75],
+      [14, "Zhangjiajie",      110.50,  29.10],
+      [15, "Kōya-san",         135.60,  34.20],
+      [16, "Mont Fuji",        138.73,  35.36],
+      [17, "Montréal",         -73.60,  45.50],
+      [18, "Boston",           -71.06,  42.36],
+      [19, "New York",         -74.00,  40.71],
+      [20, "Philadelphie",     -75.16,  39.95]
+    ];
+
+    // Route line: every stop in order
+    var linePts = stops.map(function(s){ return projection([s[2], s[3]]).join(','); }).join(' ');
+    document.getElementById('routeLine').setAttribute('points', linePts);
+
+    // Markers: group the tightly-clustered Japan and NE-US legs so labels don't overlap
+    function centerOf(idxs){
+      var lon = 0, lat = 0;
+      idxs.forEach(function(i){ lon += stops[i-1][2]; lat += stops[i-1][3]; });
+      return projection([lon / idxs.length, lat / idxs.length]);
+    }
+    var markers = [];
+    for (var i = 0; i < 14; i++){
+      var s = stops[i];
+      var p = projection([s[2], s[3]]);
+      markers.push({ label: String(s[0]), x: p[0], y: p[1], wide: false });
+    }
+    var p1516 = centerOf([15,16]); markers.push({ label: '15–16', x: p1516[0], y: p1516[1], wide: true });
+    var p1720 = centerOf([17,18,19,20]); markers.push({ label: '17–20', x: p1720[0], y: p1720[1], wide: true });
+
+    var pointsLayer = d3.select('#routePoints');
+    var g = pointsLayer.selectAll('g').data(markers).join('g')
+      .attr('class', function(d){ return 'route-point' + (d.wide ? ' route-point--wide' : ''); });
+    g.append('circle')
+      .attr('cx', function(d){ return d.x; }).attr('cy', function(d){ return d.y; })
+      .attr('r', function(d){ return d.wide ? 13 : 9; });
+    g.append('text')
+      .attr('x', function(d){ return d.x; }).attr('y', function(d){ return d.y; })
+      .text(function(d){ return d.label; });
+
+    // Graticule, drawn with the same projection for consistency
+    var graticule = d3.geoGraticule().step([30, 30]);
+    d3.select('#graticuleLayer').append('path').datum(graticule()).attr('d', pathGen);
+
+    // Land, fetched from a small public-domain world atlas and clipped properly at the seam
+    fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/land-110m.json')
+      .then(function(r){ return r.json(); })
+      .then(function(world){
+        var land = topojson.feature(world, world.objects.land);
+        d3.select('#landLayer').selectAll('path')
+          .data(land.features)
+          .join('path')
+          .attr('d', pathGen);
+      })
+      .catch(function(){ /* map stays graticule-only if the CDN is unreachable */ });
+  })();
 
   document.querySelectorAll('.newsletter-form').forEach(function(form){
     form.addEventListener('submit', function(e){
