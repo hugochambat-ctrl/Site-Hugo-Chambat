@@ -1,11 +1,62 @@
 [
   {
+    "slug": "2026-09-20-absurd",
+    "page": "philosophie",
+    "lang": "en",
+    "title": "absurd",
+    "date": "2026-09-21",
+    "cover": "/assets/journal/img_4080.heic",
+    "video_url": "",
+    "excerpt": "What do we do when the world suddenly ceases to make sense?\nThrough Camus and the experience of existential crisis, this article explores the absurd: the vertigo born from the confrontation between our need for meaning and the silence of the world.\nBut losing our certainties may not mean losing everything: their collapse can also open up a space for freedom.\nThe freedom to consciously choose what we want to love, pursue, and build.\nAnd if no meaning is given to us, then perhaps it is up to us to decide what we want to give meaning to."
+  },
+  {
+    "slug": "2026-09-20-labsurde",
+    "page": "philosophie",
+    "lang": "fr",
+    "title": "L'absurde",
+    "date": "2026-09-21",
+    "cover": "/assets/journal/img_4080.heic",
+    "video_url": "",
+    "excerpt": "Que faire lorsque le monde cesse soudainement d’avoir du sens ?\nÀ travers Camus et l’expérience de la crise existentielle, cet article explore l’absurde, ce vertige qui naît entre notre besoin de sens et le silence du monde.\nMais perdre ses certitudes ne signifie peut-être pas tout perdre : leur effondrement ouvre aussi un espace de liberté.\nCelui de choisir consciemment ce que nous voulons aimer, poursuivre et construire.\nEt si aucun sens ne nous est donné, alors peut-être nous appartient-il de décider à quoi nous voulons en donner."
+  },
+  {
+    "slug": "2026-09-09-responsibility-1",
+    "page": "philosophie",
+    "lang": "en",
+    "title": "Responsibility",
+    "date": "2026-09-10",
+    "cover": "/assets/journal/460a2a64-8fc7-4ff2-b8d2-6771ed0db877.jpg",
+    "video_url": "",
+    "excerpt": "How can we act rightly when we no longer truly believe in Good and Evil?\nAfter searching for answers in morality, in relations of power, and then in an almost unconditional form of kindness, one idea gradually imposed itself on me: responsibility.\nNot being responsible for everything that happens, but for what we choose to understand, for our intentions, for the consequences we can anticipate, and for the unnecessary suffering we can prevent.\nAn attempt to build a morality without dogma, somewhere between our powerlessness and our capacity to act."
+  },
+  {
+    "slug": "2026-09-06-la-responsabilite",
+    "page": "philosophie",
+    "lang": "fr",
+    "title": "La responsabilité",
+    "date": "2026-09-07",
+    "cover": "/assets/journal/460a2a64-8fc7-4ff2-b8d2-6771ed0db877.jpg",
+    "video_url": "",
+    "excerpt": "Comment agir justement lorsque l’on ne croit plus vraiment au Bien et au Mal ? Après avoir cherché du côté de la morale, des rapports de puissance, puis d’une bonté presque inconditionnelle, une idée s’est peu à peu imposée à moi : la responsabilité. Non pas être responsable de tout ce qui arrive, mais de ce que nous choisissons de comprendre, de nos intentions, des conséquences que nous pouvons anticiper et des souffrances inutiles que nous pouvons éviter. Une tentative de construire une morale sans dogme, quelque part entre notre impuissance et notre pouvoir d’agir."
+  },
+  {
     "slug": "2026-08-12-bienvenue",
     "page": "musique",
+    "lang": "fr",
     "title": "Bienvenue",
     "date": "2026-08-12",
     "cover": "",
     "video_url": "",
     "excerpt": "Le premier mot d'une série de notes qui s'écriront au fil des concerts, des voyages et des idées."
+  },
+  {
+    "slug": "2026-08-12-la-responsabilite",
+    "page": "philosophie",
+    "lang": "fr",
+    "title": "La responsabilité",
+    "date": "2026-08-12",
+    "cover": "/assets/journal/460a2a64-8fc7-4ff2-b8d2-6771ed0db877.jpg",
+    "video_url": "",
+    "excerpt": "Comment agir justement lorsque l'on ne croit plus vraiment au Bien et au Mal ? Après avoir cherché du côté de la morale, des rapports de puissance, puis d'une bonté presque inconditionnelle, une idée s'est peu à peu imposée à moi : la responsabilité. Non pas être responsable de tout ce qui arrive, mais de ce que nous choisissons de comprendre, de nos intentions, des conséquences que nous pouvons anticiper et des souffrances inutiles que nous pouvons éviter. Une tentative de construire une morale sans dogme, quelque part entre notre impuissance et notre pouvoir d'agir."
   }
 ]
