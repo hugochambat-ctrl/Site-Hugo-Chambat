@@ -61,10 +61,6 @@
   .gallery-grid a:hover{ filter:sepia(0.02) saturate(0.8) contrast(1.02); transform:scale(1.02); }
   .gallery-grid a.is-hidden{ display:none; }
 
-  .video-block{ max-width:900px; margin:70px auto 0; text-align:center; }
-  .video-block video{ width:100%; display:block; filter:sepia(0.15) saturate(0.65) contrast(1.02); }
-  .video-block figcaption{ font-family:var(--mono); font-size:11px; letter-spacing:0.1em; color:var(--ink-soft); margin-top:16px; }
-  .video-note{ font-size:15px; color:var(--ink-soft); margin-top:24px; max-width:520px; margin-left:auto; margin-right:auto; }
 
   footer{ background:var(--ink); color:var(--paper); }
   .footer-grid{ max-width:1100px; margin:0 auto; display:grid; grid-template-columns:1.2fr 1fr; gap:60px; }
@@ -105,9 +101,9 @@
 </nav>
 
 <header class="simple-hero reveal">
-  <p class="simple-hero__eyebrow">Photos · Vidéo</p>
+  <p class="simple-hero__eyebrow">Photos</p>
   <h1>Galerie</h1>
-  <p>Des scènes de concert aux sommets silencieux — un même regard, deux terrains.</p>
+  <p>Des scènes, des lieux, des rencontres.</p>
 </header>
 
 <section>
@@ -145,13 +141,6 @@
     <a class="g-item is-hidden" data-cat="nature" href="assets/nature-crete-pins.jpg" style="background-image:url('assets/nature-crete-pins.jpg');" aria-label="Crête rocheuse couverte de pins"></a>
     <a class="g-item is-hidden" data-cat="nature" href="assets/nature-givre.jpg" style="background-image:url('assets/nature-givre.jpg');" aria-label="Givre sur les herbes, gros plan"></a>
   </div>
-
-  <figure class="video-block reveal">
-    <video src="assets/nature-givre-loop.mp4" autoplay muted loop playsinline></video>
-    <figcaption>Givre, tôt le matin — extrait</figcaption>
-    <p class="video-note">La galerie vidéo s'enrichira progressivement de nouveaux extraits, entre captations
-    de concert et instants de marche.</p>
-  </figure>
 </section>
 
 <footer id="contact">

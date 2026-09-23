@@ -28,7 +28,21 @@ collections:
             { label: "Musique", value: "musique" },
             { label: "Philosophie", value: "philosophie" },
             { label: "Voyage", value: "voyage" },
+            { label: "Transmission", value: "transmission" },
             { label: "Nature", value: "nature" }
+          ] }
+      - { label: "Partie de la page Musique (si applicable)", name: "music_category", widget: "select", required: false, default: "", hint: "Uniquement si la page concernée est Musique — laissez vide sinon.", options: [
+            { label: "— Aucune —", value: "" },
+            { label: "Jazz", value: "jazz" },
+            { label: "Musique impressionniste", value: "impressionniste" },
+            { label: "Musique de film", value: "film" },
+            { label: "Art total", value: "art-total" }
+          ] }
+      - { label: "Partie de la page Transmission (si applicable)", name: "transmission_category", widget: "select", required: false, default: "", hint: "Uniquement si la page concernée est Transmission — laissez vide sinon.", options: [
+            { label: "— Aucune —", value: "" },
+            { label: "Le geste artisanal", value: "artisanat" },
+            { label: "Conférences & interventions", value: "conferences" },
+            { label: "Pédagogie", value: "pedagogie" }
           ] }
       - { label: "Langue", name: "lang", widget: "select", options: [
             { label: "Français", value: "fr" },
@@ -39,6 +53,7 @@ collections:
       - { label: "Photo de couverture", name: "cover", widget: "image", required: false }
       - { label: "Vidéo (lien YouTube ou Vimeo)", name: "video_url", widget: "string", required: false, hint: "Collez simplement le lien de la vidéo, ex. https://youtu.be/xxxx" }
       - { label: "Résumé court", name: "excerpt", widget: "text", required: false, hint: "Une ou deux phrases, affichées dans la liste" }
+      - { label: "Articles liés (pour la mind map Philosophie)", name: "related_articles", widget: "relation", collection: "articles", search_fields: ["title"], value_field: "{{slug}}", display_fields: ["title"], multiple: true, required: false, hint: "Uniquement pertinent pour les articles de Philosophie." }
       - { label: "Contenu de l'article", name: "body", widget: "markdown" }
 
   - name: "photos"
